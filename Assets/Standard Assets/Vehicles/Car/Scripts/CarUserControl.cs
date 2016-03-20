@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
+using System.Collections;
 
 namespace UnityStandardAssets.Vehicles.Car
 {
@@ -8,7 +9,7 @@ namespace UnityStandardAssets.Vehicles.Car
     public class CarUserControl : MonoBehaviour
     {
         private CarController m_Car; // the car controller we want to use
-
+		public AudioClip dragonClip;
 
         private void Awake()
         {
@@ -16,6 +17,24 @@ namespace UnityStandardAssets.Vehicles.Car
             m_Car = GetComponent<CarController>();
         }
 
+		void Update() 
+		{
+			//dragon sequence
+			if (m_Car.m_Rigidbody.velocity.magnitude <= 1) {
+				AudioSource audio = gameObject.AddComponent<AudioSource>();
+				audio.clip = dragonClip;
+				audio.Play();
+				Wait ();
+				if (m_Car.m_Rigidbody.velocity.magnitude <= 1) {
+					audio.Play();
+				}
+			}
+		}
+
+		IEnumerator Wait() 
+		{
+			yield return new WaitForSeconds(5);
+		}
 
         private void FixedUpdate()
         {
@@ -28,6 +47,7 @@ namespace UnityStandardAssets.Vehicles.Car
 #else
             m_Car.Move(h, v, v, 0f);
 #endif
+
         }
     }
 }
